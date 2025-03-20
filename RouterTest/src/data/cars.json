@@ -1,0 +1,53 @@
+[
+{
+    "id": 1,
+    "name": "Chevy",
+    "price": 15000,
+    "year": 2015,
+    "contact":  {
+        "dealer": "Sam",
+        "number": "555-555-5555"
+    }
+},
+{
+    "id": 2,
+    "name": "Toyota",
+    "price": 1000,
+    "year": 2025,
+    "contact":  {
+        "dealer": "Sammonlod",
+        "number": "555-555-5555"
+    }
+},
+{
+    "id": 3,
+    "name": "Mustang",
+    "price": 100000,
+    "year": 1970,
+    "contact":  {
+        "dealer": "John",
+        "number": "555-555-5555"
+    }
+},
+{
+    "id": 4,
+    "name": "Ford",
+    "price": 75000,
+    "year": 2001,
+    "contact":  {
+        "dealer": "Susan",
+        "number": "555-555-5555"
+    }
+},
+{
+    "id": 5,
+    "name": "Rivian",
+    "price": 150000,
+    "year": 2028,
+    "contact":  {
+        "dealer": "Dichard",
+        "number": "555-555-5555"
+    }
+}
+
+]
