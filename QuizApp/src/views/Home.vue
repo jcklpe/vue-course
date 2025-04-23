@@ -1,26 +1,36 @@
 <script setup>
 import quizData from "@/data/quizzes.json";
 import { RouterLink } from "vue-router";
+
+import filter from 'lodash/filter';
+import includes from 'lodash/includes';
+import toLower from 'lodash/toLower';
+import { ref, watch } from "vue";
+
+import Card from "@/components/Card.vue";
+
+const quizGroup = ref(quizData);
+const search = ref("");
+
+// search function
+watch(search, () => {
+  quizGroup.value = filter(quizData, (quizItem) => includes(toLower(quizItem.name), toLower(search.value)))
+})
 </script>
 
 <template>
-<h1>Home View</h1>
-<div class="cars">
-    <RouterLink :to="`/cars/${carItem.id}`" v-for="carItem in carData" :key="carItem.id" href="">
-        {{ carItem.name }}
-    </RouterLink>
+ <div class="container">
+    <header>
+      <h1>Quizzes</h1>
+      <input
+      v-model.trim="search"
+      type="text" placeholder="Search...">
+    </header>
+
+    <div class="options-container">
+        <Card v-for="quizItem in quizGroup"
+        :key="quizItem.id" :quizItem="quizItem" />
 </div>
+
+  </div>
 </template>
-
-<style scoped>
-.cars {
-    display: flex;
-}
-
-.cars a {
-    text-decoration: none;
-    color: black;
-    width: 100%;
-
-}
-</style>

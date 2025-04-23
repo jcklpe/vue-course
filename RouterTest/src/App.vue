@@ -7,7 +7,3 @@ import Nav from "./components/Nav.vue";
   <Nav />
   <RouterView />
 </template>
-
-<style scoped>
-
-</style>
