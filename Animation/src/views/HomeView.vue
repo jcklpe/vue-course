@@ -1,58 +1,60 @@
 <script setup>
 import { ref } from "vue"
+const namesList = ref(['']);
+const nameInput = ref('');
 
-const showGreet= ref(false);
+const addName = () => {
+  namesList.value.unshift(nameInput.value);
+  nameInput.value = "";
+}
 </script>
 
 <template>
   <main>
 
-    <div class="container">
-    <Transition name="fade">
-      <h1 v-if="showGreet">Hello World</h1>
-      <h1 v-else>Goodbye World</h1>
-    </Transition>
-  </div>
-    <button @click="showGreet = !showGreet">Toggle</button>
-  </main>
+
+<div>
+<input
+v-model="nameInput"
+@keyup.enter="addName"
+placeholder="Type and press enter"
+type="text" name="" id="">
+<TransitionGroup name="names">
+  <li
+  v-for="name in namesList"
+  :key="name"
+  >
+  {{ name }}
+  </li>
+</TransitionGroup>
+
+</div>
+
+
+</main>
 </template>
 
 <style scoped>
-.container {
-  position: relative;
+.names-enter-from {
+opacity: 0;
 }
 
-h1 {
+.names-enter-to {
+opacity: 1;
+}
+
+.names-enter-active {
+transition: all 0.4s ease;
+}
+
+.names-leave-active {
+  transition: all 0.5s ease;
   position: absolute;
-
 }
 
-button {
-  margin-top: 50px;
+.names-move {
+  transition: all 0.3s ease;
 }
 
-.fade-enter-from {
-  opacity: 0;
 
-}
-
-.fade-enter-to {
-  opacity: 1;
-}
-
-.fade-enter-active {
-  transition: all 0.4s ease;
-}
-
-.fade-leave-active {
-  transition: all 0.4s ease;
-}
-
-.fade-leave-from {
-  opacity: 1;
-}
-
-.fade-leave-to{
-  opacity: 0;
-}
 </style>

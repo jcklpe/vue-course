@@ -4,9 +4,14 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-
-
+<header>
+  <RouterLink to="/">Home</RouterLink>
+  <RouterLink to="/about">About</RouterLink>
+</header>
+<Transition name="route">
   <RouterView />
+</Transition>
+
 </template>
 
 <style scoped>
@@ -70,5 +75,18 @@ nav a:first-of-type {
     padding: 1rem 0;
     margin-top: 1rem;
   }
+
+ .route-enter-from {
+  opacity: 0;
+  transform:translateX(50px);
+ }
+ .route-enter-to {
+  opacity:1;
+  transform: translateX(0px);
+ }
+
+ .route-enter-active {
+  transition: all 0.4s ease;
+ }
 }
 </style>

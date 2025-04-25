@@ -5,6 +5,7 @@ import { RouterLink } from "vue-router";
 import filter from 'lodash/filter';
 import includes from 'lodash/includes';
 import toLower from 'lodash/toLower';
+import gsap from "gsap";
 import { ref, watch } from "vue";
 
 import Card from "@/components/Card.vue";
@@ -16,6 +17,23 @@ const search = ref("");
 watch(search, () => {
   quizGroup.value = filter(quizData, (quizItem) => includes(toLower(quizItem.name), toLower(search.value)))
 })
+
+const beforeEnter = (element) =>  {
+  element.style.opacity = 0;
+}
+
+const enter = (element) => {
+  gsap.to(element, {
+    opacity: 1,
+    duration: 0.4,
+    delay: element.dataset.index * 0.2
+  })
+
+}
+
+const afterEnter = (element) =>  {
+
+}
 </script>
 
 <template>
@@ -28,9 +46,34 @@ watch(search, () => {
     </header>
 
     <div class="options-container">
-        <Card v-for="quizItem in quizGroup"
+      <TransitionGroup
+      name="card"
+      appear
+      @before-enter="beforeEnter"
+      @enter="enter"
+      @after-enter="afterEnter"
+      >
+        <Card
+        v-for="(quizItem, quizIndex) in quizGroup"
+        :data-index="quizIndex"
         :key="quizItem.id" :quizItem="quizItem" />
+      </TransitionGroup>
+
 </div>
 
   </div>
 </template>
+
+<style scoped>
+/* .card-enter-from{
+  opacity:0;
+
+}
+.card-enter-to{
+opacity: 1;
+}
+.card-enter-active{
+transition: all 0.4s ease;
+} */
+
+</style>
