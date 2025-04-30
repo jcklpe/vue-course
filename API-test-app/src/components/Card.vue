@@ -1,12 +1,16 @@
 <script setup>
 import { defineProps, computed } from 'vue';
+
+
+
+// pass in the pokemon object as an object. Laith does this as individual props but I think it's probably cleaner to do it as an object like this.
 const { pokemon } = defineProps({
     pokemon: Object,
     required: true
 }
 
 )
-// pull data out from pokemon object
+// pull data out from pokemon object.
 const image = computed(() => pokemon.sprites.front_default)
 const types = computed(() =>
   pokemon.types.map(entry => entry.type.name)
@@ -16,14 +20,12 @@ const name = computed(() => pokemon.name)
 </script>
 
 <template>
-    <n-card title="Card with Cover">
+    <n-card>
     <template #cover>
       <img :src="image">
     </template>
     <h3>{{ name }}</h3>
-    <p v-for="type in types"
-    :key="type"
-    >{{ type }}</p>
+    <slot></slot>
   </n-card>
 </template>
 
@@ -31,11 +33,11 @@ const name = computed(() => pokemon.name)
 .n-card {
     width: 200px;
     margin: 10px 20px;
-
+    height: 200px;
 }
 
 .n-card img {
-    height: 250px
+width: 50%;
 }
 
 p {

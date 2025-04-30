@@ -1,5 +1,6 @@
 <script setup>
-import Cards from './components/Cards.vue';
+import PokeCards from './components/PokeCards.vue';
+import RickMortyCards from './components/RickMortyCards.vue';
 </script>
 
 <template>
@@ -7,12 +8,13 @@ import Cards from './components/Cards.vue';
 <h1>Hero</h1>
 <Suspense>
   <template #default>
-    <Cards/>
+    <PokeCards/>
   </template>
   <template #fallback>
     <p>....loading</p>
   </template>
 </Suspense>
+<RickMortyCards/>
 
 
 

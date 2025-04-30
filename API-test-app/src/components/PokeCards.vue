@@ -6,6 +6,7 @@ import Card from './Card.vue';
 const pokemonList = ref([]);
 // the PokeAPI returns just a name and url by default so you have to do this second step to extract the details from it
 const pokemonDetails = ref([])
+
 const page = ref(0);
 
 const response = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=8")
@@ -15,13 +16,16 @@ pokemonList.value = response.data.results;
 const detailPromises = pokemonList.value.map(pokemon => axios.get(pokemon.url).then(detailResponse => detailResponse.data))
 pokemonDetails.value = await Promise.all(detailPromises);
 
-console.log('details:', pokemonDetails.value)
 
 
 watch(page, async () => {
     const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=8&offset=${page.value * 8}`);
 
     pokemonList.value = response.data.results;
+
+    // Fetching details
+const detailPromises = pokemonList.value.map(pokemon => axios.get(pokemon.url).then(detailResponse => detailResponse.data))
+pokemonDetails.value = await Promise.all(detailPromises);
 } )
 
 </script>
@@ -33,16 +37,19 @@ watch(page, async () => {
         <Card
         v-for="pokemon in pokemonDetails"
         :key="pokemon.id"
-        :pokemon="pokemon"
-        />
-        <n-button type="primary">Button</n-button>
+        :pokemon="pokemon">
+            <p v-for="entry in pokemon.types" :key="type"> {{ entry.type.name }} </p>
+        </Card>
+    </div>
+    <div class="button-container">
+        <button @click="page = page - 1">Back</button>
+        <button @click="page = page + 1">Next</button>
     </div>
 
 </div>
 
 
-<button @click="page = page - 1">Back</button>
-<button @click="page = page + 1">Next</button>
+
 
 </template>
 
