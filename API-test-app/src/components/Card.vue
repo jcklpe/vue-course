@@ -1,30 +1,27 @@
 <script setup>
 import { defineProps, computed } from 'vue';
 
+// because pokemon and Rick and Morty API are shaped differently, we have to pass the props in like this. And we then pass in the rest of the props with in the individual xxxCards.vue context.
+const {coverSrc, title} = defineProps({
+    coverSrc: {
+        type: String,
+        required: true
+    },
+    title: {
+        type: String,
+        required: true
+    }
+})
 
 
-// pass in the pokemon object as an object. Laith does this as individual props but I think it's probably cleaner to do it as an object like this.
-const { pokemon } = defineProps({
-    pokemon: Object,
-    required: true
-}
-
-)
-// pull data out from pokemon object.
-const image = computed(() => pokemon.sprites.front_default)
-const types = computed(() =>
-  pokemon.types.map(entry => entry.type.name)
-)
-const name = computed(() => pokemon.name)
 
 </script>
 
 <template>
-    <n-card>
+    <n-card :title="title">
     <template #cover>
-      <img :src="image">
+      <img :src="coverSrc">
     </template>
-    <h3>{{ name }}</h3>
     <slot></slot>
   </n-card>
 </template>

@@ -30,8 +30,9 @@ watch(page, async () => {
         <Card
         v-for="character in rickMortyList"
         :key="character.id"
-        :character="character">
-
+        :coverSrc="character.image"
+        :title="character.name">
+        <p>Location: {{ character.location.name }}</p>
         </Card>
     </div>
     <div class="button-container">
@@ -56,7 +57,7 @@ watch(page, async () => {
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
-    height: 400px
+
 }
 .cards h3 {
     font-weight: bold;

@@ -9,22 +9,23 @@ const pokemonDetails = ref([])
 
 const page = ref(0);
 
-const response = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=8")
-pokemonList.value = response.data.results;
+// initial load of data
+const listResponse = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=8")
+pokemonList.value = listResponse.data.results;
 
 // Fetching details
-const detailPromises = pokemonList.value.map(pokemon => axios.get(pokemon.url).then(detailResponse => detailResponse.data))
+const detailPromises = pokemonList.value.map(pokeEntry => axios.get(pokeEntry.url).then(detailResponse => detailResponse.data))
 pokemonDetails.value = await Promise.all(detailPromises);
 
 
-
+// watch for page changes
 watch(page, async () => {
-    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=8&offset=${page.value * 8}`);
+    const listResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=8&offset=${page.value * 8}`);
 
-    pokemonList.value = response.data.results;
+    pokemonList.value = listResponse.data.results;
 
     // Fetching details
-const detailPromises = pokemonList.value.map(pokemon => axios.get(pokemon.url).then(detailResponse => detailResponse.data))
+const detailPromises = pokemonList.value.map(pokeEntry => axios.get(pokeEntry.url).then(detailResponse => detailResponse.data))
 pokemonDetails.value = await Promise.all(detailPromises);
 } )
 
@@ -37,8 +38,9 @@ pokemonDetails.value = await Promise.all(detailPromises);
         <Card
         v-for="pokemon in pokemonDetails"
         :key="pokemon.id"
-        :pokemon="pokemon">
-            <p v-for="entry in pokemon.types" :key="type"> {{ entry.type.name }} </p>
+        :coverSrc="pokemon.sprites.front_default"
+        :title="pokemon.name">
+            <p v-for="entry in pokemon.types" :key="entry.slot"> {{ entry.type.name }} </p>
         </Card>
     </div>
     <div class="button-container">
@@ -63,7 +65,7 @@ pokemonDetails.value = await Promise.all(detailPromises);
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
-    height: 400px
+
 }
 .cards h3 {
     font-weight: bold;
