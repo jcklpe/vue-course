@@ -1,0 +1,25 @@
+// {
+//   "files": [],
+//   "references": [
+//     {
+//       "path": "./tsconfig.node.json"
+//     },
+//     {
+//       "path": "./tsconfig.app.json"
+//     },
+//     {
+//       "path": "./tsconfig.vitest.json"
+//     }
+//   ],
+//   "compilerOptions": {
+//     "module": "NodeNext"
+//   }
+// }
+
+{
+  // Inherit everything from `tsconfig.app.json`
+  "extends": "./tsconfig.app.json",
+
+  // Make sure TS also sees your .vue shims and all TS/Vue files
+  "include": ["env.d.ts", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"]
+}
