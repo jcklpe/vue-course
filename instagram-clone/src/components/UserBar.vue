@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from "vue";
-
 const { username, userInfo } = defineProps<{
   username: string;
   userInfo: {
@@ -35,7 +33,7 @@ const { username, userInfo } = defineProps<{
   display: flex;
   align-items: center;
 
-  ::v-deep h5 {
+  :deep(h5) {
     padding: 0;
     margin: 0 25px;
   }

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from "vue";
-
 interface Post {
   id: number;
   image: string;
@@ -22,7 +20,7 @@ const { postList } = defineProps<{
   justify-content: left;
   flex-wrap: wrap;
 
-  ::v-deep img {
+  :deep(img) {
     margin: 5px;
     width: 200px;
   }
