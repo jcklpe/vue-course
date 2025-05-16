@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import { supabase } from "@/supabase";
 
 export const useUserStore = defineStore("users", () => {
-  const user = ref(null);
+  const user = ref<{ id: string; email: string; username: string } | null>(null);
   const errorMessage = ref("");
 
   //- Private Helper Functions
@@ -32,8 +32,57 @@ export const useUserStore = defineStore("users", () => {
   };
 
   //- Public Store Actions
-  const handleLogin = () => {};
+  const clearErrorMessage = () => {
+    errorMessage.value = "";
+  };
 
+  //- handle login
+  const handleLogin = async (credentials: {
+    email: string;
+    password: string;
+    username: string;
+  }) => {
+    const { email, password, username } = credentials;
+
+    if (!validateEmail(email)) {
+      return (errorMessage.value = "Email is invalid");
+    }
+    if (!password.length) {
+      return (errorMessage.value = "Password cannot be empty");
+    }
+
+    const { error, data } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    console.log("login response:", { data, error });
+
+    if (error) {
+      errorMessage.value = `Login error: ${error.message}`;
+      return;
+    }
+
+    if (!data?.session) {
+      errorMessage.value = "Login failed: bad credentials";
+      return;
+    }
+
+    const { data: existingUser } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", email)
+      .single();
+
+    user.value = {
+      email: existingUser.email,
+      username: existingUser.username,
+      id: existingUser.id,
+    };
+    clearErrorMessage();
+  };
+
+  //- handle signup
   const handleSignup = async (credentials: {
     email: string;
     password: string;
@@ -54,10 +103,9 @@ export const useUserStore = defineStore("users", () => {
       return (errorMessage.value = "Email is invalid");
     }
 
-    errorMessage.value = "";
+    clearErrorMessage();
 
-    // actual sign in process
-
+    //- Actual sign in process
     // 1) Sign the user up
     const { data: signUpData, error: signUpError }: { data: { session: any } | null; error: any } =
       await supabase.auth.signUp({ email, password });
@@ -96,10 +144,48 @@ export const useUserStore = defineStore("users", () => {
     } else {
       errorMessage.value = "User is not authenticated.";
     }
+
+    const { data: newUser } = await supabase.from("users").select().eq("email", email).single();
+
+    user.value = {
+      id: newUser.id,
+      email: newUser.email,
+      username: newUser.username,
+    };
   };
 
-  const handleLogout = () => {};
-  const getUser = () => {};
+  const getUser = async () => {
+    const { data } = await supabase.auth.getUser();
 
-  return { user, errorMessage, handleLogin, handleSignup, handleLogout, getUser };
+    if (data.user) {
+      const { data: userWithEmail } = await supabase
+        .from("users")
+        .select()
+        .eq("email", data.user.email)
+        .single();
+
+      user.value = {
+        username: userWithEmail.username,
+        email: userWithEmail.email,
+        id: userWithEmail.id,
+      };
+    } else {
+      console.error("User data is null");
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    user.value = null;
+  };
+
+  return {
+    user,
+    errorMessage,
+    handleLogin,
+    handleSignup,
+    handleLogout,
+    getUser,
+    clearErrorMessage,
+  };
 });

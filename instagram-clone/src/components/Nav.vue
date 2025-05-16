@@ -1,13 +1,21 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
-const router = useRouter();
+import { useUserStore } from "@/stores/users";
+import { storeToRefs } from "pinia";
+
 import Container from "./Container.vue";
 import AuthModal from "./AuthModal.vue";
 
+const router = useRouter();
+const userStore = useUserStore();
+
 //- Refs
 const searchParam = ref("");
-const isAuthenticated = ref(false);
+const { user } = storeToRefs(userStore);
+const isAuthenticated = computed(() => !!user.value);
+
+//- Event Functions
 const onSearch = () => {
   if (searchParam.value) {
     router.push(`/profile/${searchParam.value}`);
@@ -34,7 +42,7 @@ const onSearch = () => {
       </div>
       <div v-if="isAuthenticated" class="right-content">
         <a-button type="primary">Profile</a-button>
-        <a-button type="primary">Logout</a-button>
+        <a-button type="primary" @click="userStore.handleLogout()">Logout</a-button>
       </div>
     </Container>
   </a-layout-header>

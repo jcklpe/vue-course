@@ -9,8 +9,8 @@ const { isLogin } = defineProps<{ isLogin: boolean }>();
 //- Stores
 const userStore = useUserStore();
 
-const { errorMessage } = storeToRefs(userStore);
-const { handleSignup } = userStore;
+const { errorMessage, user } = storeToRefs(userStore);
+const { handleSignup, clearErrorMessage, handleLogin } = userStore;
 
 const userCredentials = reactive({
   email: "",
@@ -24,13 +24,38 @@ const username = ref("");
 const password = ref("");
 const emailAddress = ref("");
 
+//- Helper functions
+const clearUserCredentialsInput = () => {
+  userCredentials.email = "";
+  userCredentials.password = "";
+  userCredentials.username = "";
+  clearErrorMessage();
+};
+
 //- Event functions
 const showModal = () => {
   visible.value = true;
 };
-const handleOk = () => {
-  // visible.value = false;
-  handleSignup(userCredentials);
+const handleOk = async () => {
+  if (isLogin) {
+    await handleLogin({
+      password: userCredentials.password,
+      email: userCredentials.email,
+      username: userCredentials.username,
+    });
+  } else {
+    await handleSignup(userCredentials);
+  }
+
+  if (user.value && !errorMessage.value) {
+    visible.value = false;
+    clearUserCredentialsInput();
+  }
+};
+
+const handleCancel = () => {
+  visible.value = false;
+  clearUserCredentialsInput();
 };
 
 //- Computed Values
@@ -47,6 +72,11 @@ const title = computed(() => {
     <a-button type="primary" @click="showModal"> {{ title }} </a-button>
 
     <a-modal v-model:visible="visible" :title="title" @ok="handleOk">
+      <template #footer>
+        <a-button key="back" @click="handleCancel">Cancel</a-button>
+        <a-button v-if="isLogin" key="login" type="primary" @click="handleOk">Login</a-button>
+        <a-button v-else key="signup" type="primary" @click="handleOk">Signup</a-button>
+      </template>
       <label v-if="!isLogin" for="username">Username</label>
       <a-input
         v-if="!isLogin"
