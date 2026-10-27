@@ -7,16 +7,12 @@ export const useUserStore = defineStore("users", () => {
   const errorMessage = ref("");
 
   //- Private Helper Functions
-  async function addUserRow(username: string, email: string) {
+  async function addUserRow(username: string, email: string, authId: string) {
     // 1) get a reference to the "users" table
     const usersTable = supabase.from("users");
 
     // 2) build the payload
-    // const newUser = { username, email };
-    const newUser = {
-      username,
-      email,
-    };
+    const newUser = { username, email, auth_id: authId };
 
     // 3) perform the insert and request return
     const { data, error } = await usersTable.insert(newUser).select("*");
@@ -43,6 +39,11 @@ export const useUserStore = defineStore("users", () => {
     username: string;
   }) => {
     const { email, password, username } = credentials;
+
+    // Ensure username is a string
+    if (typeof username !== "string") {
+      return (errorMessage.value = "Username must be a string");
+    }
 
     if (!validateEmail(email)) {
       return (errorMessage.value = "Email is invalid");
@@ -135,7 +136,7 @@ export const useUserStore = defineStore("users", () => {
     // 3) Now authenticated → this insert will pass your RLS policy
     if (realSession) {
       try {
-        const insertedRows = await addUserRow(username, email);
+        const insertedRows = await addUserRow(username, email, realSession.user.id);
         console.log("🎉 user row inserted:", insertedRows);
       } catch (insertError: any) {
         console.error("❌ failure to insert user row:", insertError);

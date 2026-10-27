@@ -22,6 +22,12 @@ const onSearch = () => {
     searchParam.value = "";
   }
 };
+
+const goToUsersProfile = () => {
+  if (user.value) {
+    router.push(`/profile/${user.value.username}`);
+  }
+};
 </script>
 
 <template>
@@ -41,7 +47,7 @@ const onSearch = () => {
         <AuthModal :isLogin="true" />
       </div>
       <div v-if="isAuthenticated" class="right-content">
-        <a-button type="primary">Profile</a-button>
+        <a-button type="primary" @click="goToUsersProfile">Profile</a-button>
         <a-button type="primary" @click="userStore.handleLogout()">Logout</a-button>
       </div>
     </Container>
